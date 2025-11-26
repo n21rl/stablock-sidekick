@@ -139,7 +139,11 @@ export async function saveStatblockToFile(plugin: StatblockSidekick, content: st
     let folderPath: string;
     switch (settings.saveMode) {
         case 'sameFolder':
-        folderPath = this.app.workspace.getActiveFile().parent.path;
+        const activeFile = plugin.app.workspace.getActiveFile();
+        if (!activeFile?.parent) {
+            throw new Error('Expected an active file when saving to the same folder.');
+        }
+        folderPath = activeFile.parent.path;
         break;
         case 'defaultFolder':
         folderPath = normalizePath(settings.saveFolder);
