@@ -449,20 +449,17 @@ export class Sidekick {
     
         const actions = this.statblock.actions ?? [];
         const updatedActions: typeof actions = [];
-    
+
         for (const action of actions) {
             const attack = new Attack(action);
             if (attack.isAttack) {
                 const relevantAbility = attack.getRelevantAbility(newAbilities);
                 const oldAbilityMod = oldMods[relevantAbility];
                 const newAbilityMod = newMods[relevantAbility];
-    
+
                 const proficiencyBonusDiff = newProficiencyBonus - oldProficiencyBonus;
                 const modifierDiff = newAbilityMod - oldAbilityMod;
-    
-                let updatedToHit = attack.toHit;
-                let updatedDamageMod = attack.damageMod;
-    
+
                 if (attack.toHit !== undefined) {
                     attack.toHit += modifierDiff;
                     attack.toHit += proficiencyBonusDiff;
@@ -476,15 +473,13 @@ export class Sidekick {
                     ...action,
                     desc: attack.constructDescription()
                 };
-    
-                if (this.statblock.actions) {
-                    this.statblock.actions[this.statblock.actions.indexOf(action)] = updatedAction;
-                } else {
-                    this.statblock.actions = [updatedAction];
-                }
-                
+
+                updatedActions.push(updatedAction);
+            } else {
+                updatedActions.push(action);
             }
-        }    
+        }
+
         this.statblock.actions = updatedActions;
     }
 
